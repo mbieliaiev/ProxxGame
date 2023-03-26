@@ -1,5 +1,4 @@
 ﻿using ProxxGame.Contract;
-using ProxxGame.Model;
 
 namespace ProxxGame.Logics
 {
@@ -38,7 +37,7 @@ namespace ProxxGame.Logics
             }
             if (openedCell.Value == 0)
             {
-                OpenAdjacentEmptyCells(openedCell);
+                openedCell.OpenAdjacentEmptyCells();
             }
             var numberOpenedCells = _cellsTable.GetOpenedCellsCount();
             if (numberOpenedCells + _cellsTable.BlackHoles.Length == _cellsTable.Width * _cellsTable.Height) {
@@ -54,22 +53,6 @@ namespace ProxxGame.Logics
         {
             _cellsTable.Cells[row, column].ToggleMarkAsBlackHole();
             _cellsTable.Print();
-        }
-
-        private void OpenAdjacentEmptyCells(ICell cell)
-        {
-            cell.SetOpen();
-            foreach (var adjacentCell in cell.AdjacentCells)
-            {
-                if (adjacentCell.Value == 0 && !adjacentCell.IsOpen)
-                {                    
-                    OpenAdjacentEmptyCells(adjacentCell);
-                }
-                else if (adjacentCell.Value > 0)
-                {
-                    adjacentCell.SetOpen();
-                }
-            }
         }
     }
 }

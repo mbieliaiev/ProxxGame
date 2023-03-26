@@ -17,6 +17,8 @@ public interface ICell
 
     void IncrementNonHoleValue();
 
+    void OpenAdjacentEmptyCells();
+
     /// <summary>
     /// Storing adjacent cells for each cell on the table allows us to easily calculate numbers of 
     /// black holes and easily open all the adjacent empty cells when clicking on an empty cell

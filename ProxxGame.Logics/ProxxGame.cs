@@ -1,15 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProxxGame.Contract;
-using ProxxGame.Utilities;
 
 namespace ProxxGame.Logics
 {
     public class ProxxGame : IProxxGame
     {
         private readonly ILogger<ProxxGame> _logger;
-        private IProxxEngine _engine;
-        public ProxxGame(IProxxEngine engine, ILogger<ProxxGame> logger) {
+        private readonly IProxxEngine _engine;
+        private readonly ICommunicationChannel _communicationChannel;
+
+        public ProxxGame(IProxxEngine engine, ICommunicationChannel communicationChannel, 
+            ILogger<ProxxGame> logger) {
             _engine = engine;
+            _communicationChannel = communicationChannel;
             _logger = logger;
         }
         public void Start()
@@ -21,17 +24,17 @@ namespace ProxxGame.Logics
                 GameResult stepResult;
                 while (true)
                 {
-                    Console.WriteLine("\n\nIf you want to mark a cell as a black hole, type 'b' otherwise - press any key to continue:");
-                    var markMineCommand = Console.ReadLine();
+                    var markMineCommand = 
+                        _communicationChannel.ReadWithMessage("\n\nIf you want to mark a cell as a black hole, type 'b' otherwise - press any key to continue:");
                     if (markMineCommand == "b") {
-                        var brow = Utility.PerformUserIntInput("\n\nInput the X coordinate of a cell to mark as a black hole:", _logger);
-                        var bcolumn = Utility.PerformUserIntInput("Input the Y coordinate of a cell to mark as a black hole:", _logger);
+                        var brow = _communicationChannel.ReadIntWithMessage("\n\nInput the X coordinate of a cell to mark as a black hole:");
+                        var bcolumn = _communicationChannel.ReadIntWithMessage("Input the Y coordinate of a cell to mark as a black hole:");
                         _engine.MarkAsBlackHole(brow, bcolumn);
                     }
                     else
                     {
-                        var row = Utility.PerformUserIntInput("\n\nInput the X coordinate of a cell to open:", _logger);
-                        var column = Utility.PerformUserIntInput("Input the Y coordinate of a cell to open:", _logger);
+                        var row = _communicationChannel.ReadIntWithMessage("\n\nInput the X coordinate of a cell to open:");
+                        var column = _communicationChannel.ReadIntWithMessage("Input the Y coordinate of a cell to open:");
                         stepResult = _engine.MakeStep(row, column);
                         if (stepResult == GameResult.Win || stepResult == GameResult.Loose)
                         {
@@ -42,11 +45,11 @@ namespace ProxxGame.Logics
                 _logger.LogInformation("Game was successfully finished.");
                 if (stepResult == GameResult.Win)
                 {
-                    Console.WriteLine("Congratulations! You have won!");
+                    _communicationChannel.ShowMessage("Congratulations! You have won!");
                 }
                 else
                 {
-                    Console.WriteLine("You have loose, don't worry, you may try again :)");
+                    _communicationChannel.ShowMessage("You have loose, don't worry, you may try again :)");
                 }
             }
             catch (Exception e)

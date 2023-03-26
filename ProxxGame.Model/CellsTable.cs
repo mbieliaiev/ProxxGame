@@ -37,6 +37,8 @@ namespace ProxxGame.Model
 
         public int Height { get; private set; }
 
+        public int BlackHolesNumber { get; private set; }
+
         public ICell[] BlackHoles { get; private set; }
 
         public void Initialize(int width = -1, int height = -1, ICell[] blackHoles = null)
@@ -44,6 +46,9 @@ namespace ProxxGame.Model
             if (width < 0 || height < 0 || blackHoles == null)
             {
                 PickTableParameters();
+
+                BlackHoles = new Cell[BlackHolesNumber];
+                Cells = new Cell[Height, Width];
             }
             else
             {
@@ -86,12 +91,11 @@ namespace ProxxGame.Model
         {
             int width, height, blackHolesNumber;
             _cellTableParametersPicker.PickParameters(out width, out height, out blackHolesNumber);
-            Width = width; Height = height;
+            Width = width; 
+            Height = height;
+            BlackHolesNumber = blackHolesNumber;
 
             _logger.LogInformation($"Cells table with width = {width}, height = {height}, {blackHolesNumber} black holes will be crearted");
-
-            BlackHoles = new Cell[blackHolesNumber];
-            Cells = new Cell[Height, Width];
         }
     }
 }

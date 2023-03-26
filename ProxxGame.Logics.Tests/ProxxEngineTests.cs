@@ -27,6 +27,11 @@ namespace ProxxGame.Logics.Tests
             _blackHolesAllocatorMock = new Mock<IBlackHolesAllocator>();
             _cellTableParametersPickerMoq = new Mock<ICellTableParametersPicker>();
 
+            InitProxEngine();
+        }
+
+        private void InitProxEngine()
+        {
             var cells = new ICell[3, 3];
             for (var i = 0; i < 3; i++)
             {
@@ -37,6 +42,7 @@ namespace ProxxGame.Logics.Tests
             }
             _cellsTable = new CellsTable(cells, 3, 3, _printerMock.Object, _adjacentCellsManagerMock.Object,
                 _blackHolesAllocatorMock.Object, _cellTableParametersPickerMoq.Object, _loggerMock.Object);
+
             _proxxEngine = new ProxxEngine(_cellsTable);
             var blackHoles = new[] { new Cell(isBlackHole: true) };
             _proxxEngine.Initialize(3, 3, blackHoles);

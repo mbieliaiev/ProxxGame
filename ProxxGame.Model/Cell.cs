@@ -4,12 +4,14 @@ namespace ProxxGame.Model
 {
     public class Cell : ICell
     {
-        public Cell(int value = 0, bool isBlackHole = false) {
+        public Cell(int value = 0, bool isBlackHole = false)
+        {
             Value = value;
             IsBlackHole = isBlackHole;
         }
 
-        public Cell(List<ICell> adjacentCells) {
+        public Cell(List<ICell> adjacentCells)
+        {
             AdjacentCells = adjacentCells;
         }
 
@@ -17,7 +19,7 @@ namespace ProxxGame.Model
 
         public Cell(int value, ICellCoordinates coordinates, bool isBlackHole)
         {
-            Value = isBlackHole? -1 : value;
+            Value = isBlackHole ? -1 : value;
             Coordinates = coordinates;
             IsBlackHole = isBlackHole;
         }
@@ -29,8 +31,9 @@ namespace ProxxGame.Model
 
         public void IncrementNonHoleValue()
         {
-            if (IsBlackHole) {
-                return;            
+            if (IsBlackHole)
+            {
+                return;
             }
             Value++;
         }
@@ -38,6 +41,22 @@ namespace ProxxGame.Model
         public void ToggleMarkAsBlackHole()
         {
             IsMarkedAsBlackHole = !IsMarkedAsBlackHole;
+        }
+
+        public void OpenAdjacentEmptyCells()
+        {
+            SetOpen();
+            foreach (var adjacentCell in AdjacentCells)
+            {
+                if (adjacentCell.Value == 0 && !adjacentCell.IsOpen)
+                {
+                    adjacentCell.OpenAdjacentEmptyCells();
+                }
+                else if (adjacentCell.Value > 0)
+                {
+                    adjacentCell.SetOpen();
+                }
+            }
         }
 
         public int Value { get; private set; }
@@ -51,5 +70,5 @@ namespace ProxxGame.Model
         public List<ICell> AdjacentCells { get; private set; } = new List<ICell>();
 
         public bool IsMarkedAsBlackHole { get; private set; }
-}
+    }
 }
