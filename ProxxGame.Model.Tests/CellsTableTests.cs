@@ -10,6 +10,7 @@ namespace ProxxGame.Model.Tests
         private Mock<ICellTablePrinter> _printerMoq;
         private Mock<IAdjacentCellsManager> _adjacentCellsManagerMoq;
         private Mock<IBlackHolesAllocator> _blackHolesAllocatorMoq;
+        private Mock<ICellTableParametersPicker> _cellTableParametersPickerMoq;
 
         private CellsTable _cells;
 
@@ -20,9 +21,10 @@ namespace ProxxGame.Model.Tests
             _printerMoq = new Mock<ICellTablePrinter>();
             _adjacentCellsManagerMoq = new Mock<IAdjacentCellsManager>();
             _blackHolesAllocatorMoq = new Mock<IBlackHolesAllocator>();
+            _cellTableParametersPickerMoq = new Mock<ICellTableParametersPicker>();
 
             _cells = new CellsTable(_printerMoq.Object, _adjacentCellsManagerMoq.Object,
-                _blackHolesAllocatorMoq.Object, _loggerMoq.Object);
+                _blackHolesAllocatorMoq.Object, _cellTableParametersPickerMoq.Object, _loggerMoq.Object);
         }
 
         [Test]

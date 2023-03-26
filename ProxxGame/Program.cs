@@ -18,6 +18,7 @@ namespace ProxxGame
                 .AddSingleton<IAdjacentCellsManager, AdjacentCellsManager>()
                 .AddSingleton<IBlackHolesAllocator, BlackHolesAllocator>()
                 .AddSingleton<ICellTablePrinter, CellsTableConsolePrinter>()
+                .AddSingleton<ICellTableParametersPicker, CellTableConsoleParametersPicker>()
                 .AddSingleton<ICellsTable, CellsTable>()
                 .AddSingleton<IProxxEngine, ProxxEngine>()
                 .AddSingleton<IProxxGame, Logics.ProxxGame>()

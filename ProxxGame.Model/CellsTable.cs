@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProxxGame.Contract;
-using ProxxGame.Utilities;
 
 namespace ProxxGame.Model
 {
@@ -10,18 +9,22 @@ namespace ProxxGame.Model
         private readonly ICellTablePrinter _printer;
         private readonly IAdjacentCellsManager _adjacentCellsManager;
         private readonly IBlackHolesAllocator _blackHolesAllocator;
+        private readonly ICellTableParametersPicker _cellTableParametersPicker;
 
         public CellsTable(ICellTablePrinter printer, IAdjacentCellsManager adjacentCellsManager,
-            IBlackHolesAllocator blackHolesAllocator, ILogger<CellsTable> logger) {
+            IBlackHolesAllocator blackHolesAllocator, ICellTableParametersPicker cellTableParametersPicker,
+            ILogger<CellsTable> logger) {
             _logger = logger;
             _printer = printer;
             _adjacentCellsManager = adjacentCellsManager;
             _blackHolesAllocator = blackHolesAllocator;
+            _cellTableParametersPicker = cellTableParametersPicker;
         }
 
         public CellsTable(ICell[,] cells, int height, int width, ICellTablePrinter printer = null, 
             IAdjacentCellsManager adjacentCellsManager = null, IBlackHolesAllocator blackHolesAllocator = null, 
-            ILogger<CellsTable> logger = null) : this(printer, adjacentCellsManager, blackHolesAllocator, logger)
+            ICellTableParametersPicker cellTableParametersPicker = null, ILogger<CellsTable> logger = null) 
+            : this(printer, adjacentCellsManager, blackHolesAllocator, cellTableParametersPicker, logger)
         {
             Cells = cells;
             Height = height;
@@ -40,7 +43,7 @@ namespace ProxxGame.Model
         {
             if (width < 0 || height < 0 || blackHoles == null)
             {
-                InputTableParameters();
+                PickTableParameters();
             }
             else
             {
@@ -79,11 +82,13 @@ namespace ProxxGame.Model
             return result;
         }
 
-        private void InputTableParameters()
+        private void PickTableParameters()
         {
-            Width = Utility.PerformUserIntInput("Input table width:", _logger); ;
-            Height = Utility.PerformUserIntInput("Input table height:", _logger);
-            var blackHolesNumber = Utility.PerformUserIntInput("Input number of black holes:", _logger);
+            int width, height, blackHolesNumber;
+            _cellTableParametersPicker.PickParameters(out width, out height, out blackHolesNumber);
+            Width = width; Height = height;
+
+            _logger.LogInformation($"Cells table with width = {width}, height = {height}, {blackHolesNumber} black holes will be crearted");
 
             BlackHoles = new Cell[blackHolesNumber];
             Cells = new Cell[Height, Width];
